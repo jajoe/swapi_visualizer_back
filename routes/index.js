@@ -4,6 +4,15 @@ const getDataFromTypeAndText = require('../helpers/getData')
 const addTypeToItems = require('../helpers/postProcessing').addTypeToItems;
 const utils = require('../helpers/axiosUtils');
 
+const EXPIRES_IN_CACHING = 30;
+
+const defaultOptions = {
+  cache: {
+    expiresIn: EXPIRES_IN_CACHING * 1000,
+    privacy: 'private',
+  },
+};
+
 // Add the route /all/{name} which enables to search a result whatever the type
 function addRouteWithoutFilter(server) {
   server.route({
@@ -24,6 +33,7 @@ function addRouteWithoutFilter(server) {
         .filter((resultsForOneType) => !!resultsForOneType);
       return filteredResults ? filteredResults.flat() : [];
     },
+    options: defaultOptions,
   });
 }
 
@@ -41,6 +51,7 @@ function addRoutesWithGivenType(server) {
           ? addTypeToItems(result.data.results, type)
           : [];
       },
+      options: defaultOptions,
     });
   });
 }
